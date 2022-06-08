@@ -1,0 +1,9 @@
+torch==1.8.0
+torchvision==0.9.0
+numpy==1.19.0
+imageio-ffmpeg==0.4.5
+imageio==2.9.0
+opencv-python==4.5.3.56
+tqdm==4.62.2
+scikit-image==0.17.2
+ConfigArgParse==1.5.2

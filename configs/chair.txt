@@ -1,0 +1,35 @@
+expname = chair
+basedir = /your_save_path/logs
+datadir = /your_data_path/chair
+dataset_type = syn_llff
+
+no_batching = False
+
+use_viewdirs = True
+white_bkgd = False
+lrate_decay = 500
+testskip = 1
+
+N_samples = 64
+N_importance = 128
+N_rand = 1024
+
+precrop_iters = 500
+precrop_frac = 0.5
+
+i_testset = 50000
+i_video = 50000
+
+i_print = 10
+i_img = 100
+
+render_out_path='results'
+max_exp = 5
+min_exp = -3
+
+random_seed = 2
+fixed_value = 0.73
+near_depth = 5.0
+
+half_res = True
+render_size = 40

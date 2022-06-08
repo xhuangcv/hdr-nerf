@@ -1,0 +1,26 @@
+expname = flower
+basedir = /your_save_path/logs
+datadir = /your_data_path/flower
+dataset_type = real_llff
+
+factor = 4
+llffhold = 0
+
+N_rand = 1024
+N_samples = 64
+N_importance = 64
+
+use_viewdirs = True
+raw_noise_std = 1e0
+
+i_testset = 50000
+i_video = 500000
+
+i_print = 10
+i_img = 100
+
+render_out_path='results'
+max_exp = 0.166667
+min_exp = 0.166667
+fixed_value = 0.5
+random_seed = 1
