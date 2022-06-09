@@ -331,16 +331,6 @@ def create_nerf(args):
 
 def raw2outputs(raw, z_vals, rays_d, raw_noise_std=0, white_bkgd=False, pytest=False):
     """Transforms model's predictions to semantically meaningful values.
-    Args:
-        raw: [num_rays, num_samples along ray, 7]. Prediction from model.
-        z_vals: [num_rays, num_samples along ray]. Integration time.
-        rays_d: [num_rays, 3]. Direction of each ray.
-    Returns:
-        rgb_map: [num_rays, 3]. Estimated RGB color of a ray.
-        disp_map: [num_rays]. Disparity map. Inverse of depth map.
-        acc_map: [num_rays]. Sum of weights along each ray.
-        weights: [num_rays, num_samples]. Weights assigned to each sampled color.
-        depth_map: [num_rays]. Estimated distance to object.
     """
     raw2alpha = lambda raw, dists, act_fn=F.relu: 1.-torch.exp(-act_fn(raw)*dists)
 
@@ -379,48 +369,9 @@ def raw2outputs(raw, z_vals, rays_d, raw_noise_std=0, white_bkgd=False, pytest=F
     return rgb_h_map, rgb_l_map, disp_map, acc_map, weights, depth_map
 
 
-def render_rays(ray_batch,
-                network_fn,
-                network_query_fn,
-                N_samples,
-                retraw=False,
-                lindisp=False,
-                perturb=0.,
-                N_importance=0,
-                network_fine=None,
-                white_bkgd=False,
-                raw_noise_std=0.,
-                verbose=False,
-                pytest=False):
+def render_rays(ray_batch, network_fn, network_query_fn, N_samples, retraw=False, lindisp=False, perturb=0., 
+                N_importance=0, network_fine=None, white_bkgd=False, raw_noise_std=0., verbose=False, pytest=False):
     """Volumetric rendering.
-    Args:
-      ray_batch: array of shape [batch_size, ...]. All information necessary
-        for sampling along a ray, including: ray origin, ray direction, min
-        dist, max dist, and unit-magnitude viewing direction.
-      network_fn: function. Model for predicting RGB and density at each point
-        in space.
-      network_query_fn: function used for passing queries to network_fn.
-      N_samples: int. Number of different times to sample along each ray.
-      retraw: bool. If True, include model's raw, unprocessed predictions.
-      lindisp: bool. If True, sample linearly in inverse depth rather than in depth.
-      perturb: float, 0 or 1. If non-zero, each ray is sampled at stratified
-        random points in time.
-      N_importance: int. Number of additional times to sample along each ray.
-        These samples are only passed to network_fine.
-      network_fine: "fine" network with same spec as network_fn.
-      white_bkgd: bool. If True, assume a white background.
-      raw_noise_std: ...
-      verbose: bool. If True, print more debugging info.
-    Returns:
-      rgb_map: [num_rays, 3]. Estimated RGB color of a ray. Comes from fine model.
-      disp_map: [num_rays]. Disparity map. 1 / depth.
-      acc_map: [num_rays]. Accumulated opacity along each ray. Comes from fine model.
-      raw: [num_rays, num_samples, 4]. Raw predictions from model.
-      rgb0: See rgb_map. Output for coarse model.
-      disp0: See disp_map. Output for coarse model.
-      acc0: See acc_map. Output for coarse model.
-      z_std: [num_rays]. Standard deviation of distances along ray for each
-        sample.
     """
     N_rays = ray_batch.shape[0]
     rays_o, rays_d = ray_batch[:,0:3], ray_batch[:,3:6] # [N_rays, 3] each
