@@ -7,5 +7,5 @@ opencv-python==4.5.3.56
 tqdm==4.62.2
 scikit-image==0.17.2
 ConfigArgParse==1.5.2
-tensorboardX-2.5.1
+tensorboardX==2.5.1
 
