@@ -6,8 +6,8 @@ import torch.nn.functional as F
 import numpy as np
 from matplotlib import pyplot as plt
 import cv2
-from skimage.measure import compare_ssim
-from skimage.measure import compare_psnr
+rom skimage.metrics import structural_similarity
+from skimage.metrics import peak_signal_noise_ratio
 import scipy.io as scio
 
 # Misc
