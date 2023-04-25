@@ -1,5 +1,5 @@
 # HDR-NeRF: High Dynamic Range Neural Radiance Fields
-### [Project Page](https://shsf0817.github.io/hdr-nerf/) | [Video](https://youtu.be/GmxsW9L1O6s) | [Paper](https://arxiv.org/abs/2111.14451) | [Dataset](https://drive.google.com/drive/folders/1OTDLLH8ydKX1DcaNpbQ46LlP0dKx6E-I?usp=sharing)
+### [Project Page](https://xhuangcv.github.io/hdr-nerf/) | [Video](https://youtu.be/GmxsW9L1O6s) | [Paper](https://arxiv.org/abs/2111.14451) | [Dataset](https://drive.google.com/drive/folders/1OTDLLH8ydKX1DcaNpbQ46LlP0dKx6E-I?usp=sharing)
 
 We present High Dynamic Range Neural Radiance Fields (HDR-NeRF) to recover an HDR radiance field from a set of low dynamic range (LDR) views with different exposures. Using the HDR-NeRF, we are able to generate both novel HDR views and novel LDR views under different exposures.
 
