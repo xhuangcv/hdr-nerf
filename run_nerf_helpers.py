@@ -386,22 +386,46 @@ def tonemapR(hdr_img):
     return ldr_img
 
 
-def tonemapSimple(x):
-    return (torch.exp(x) / (torch.exp(x) + 1)) ** (1 / 2.2)
+def log_crf(x):
+    return torch.log(x + 1)
 
 
 def warm_crf(model, pretrain_iters=1000, device='cuda'):
-    optimizer_crf = torch.optim.Adam(model.parameters(), lr=5e-4)
+    params_to_train = model.exps_linears_r.parameters() \
+                    + model.exps_linears_g.parameters() \
+                    + model.exps_linears_b.parameters() \
+                    + model.r_l_linner.parameters() \
+                    + model.g_l_linner.parameters() \
+                    + model.b_l_linner.parameters()
+    
+    optimizer_crf = torch.optim.Adam(params_to_train, lr=5e-4)
 
     for i in range(pretrain_iters):
         optimizer_crf.zero_grad()
-        rand_radiance = torch.rand(1024, 3, requires_grad=True).to(device) * 3 # radiance in [0, 3]
-        rand_exposure = torch.rand(1024, 1, requires_grad=True).to(device) * 6 - 3.0 # radiance in [-3, 3]
 
-        gt_rgb = tonemapSimple(rand_radiance + rand_exposure)
+        ln_x = (torch.rand(1024, 1, requires_grad=True).to(device) * 6.0 - 3.0).reshape([-1, 1])
+        r_h = ln_x
+        g_h = ln_x
+        b_h = ln_x
 
-        rgb_l = model(rand_radiance, torch.exp(rand_exposure))
-        rgb_l = torch.sigmoid(rgb_l)
+        for i, l in enumerate(model.exps_linears_r):
+            r_h = model.exps_linears_r[i](r_h)
+            r_h = F.relu(r_h)
+        r_l = model.r_l_linner(r_h)
+
+        for i, l in enumerate(model.exps_linears_g):
+            g_h = model.exps_linears_g[i](g_h)
+            g_h = F.relu(g_h)
+        g_l = model.g_l_linner(g_h)
+
+        for i, l in enumerate(model.exps_linears_b):
+            b_h = model.exps_linears_b[i](b_h)
+            b_h = F.relu(b_h)
+        b_l = model.b_l_linner(b_h)
+
+        rgb_l = torch.sigmoid(torch.cat([r_l, g_l, b_l], -1))
+
+        gt_rgb = torch.clip(log_crf(torch.exp(ln_x)), 0, 1).tile([1, 3])
 
         loss = (rgb_l - gt_rgb).norm(dim=1).mean()
         print(f"step {i} pre-train loss: {loss.item()}")
