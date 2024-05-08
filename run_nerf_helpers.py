@@ -384,3 +384,27 @@ def tonemapR(hdr_img):
         ldr_img = tonemapReinhard.process(hdr_img)
 
     return ldr_img
+
+
+def tonemapSimple(x):
+    return (torch.exp(x) / (torch.exp(x) + 1)) ** (1 / 2.2)
+
+
+def warm_crf(model, pretrain_iters=1000, device='cuda'):
+    optimizer_crf = torch.optim.Adam(model.parameters(), lr=5e-4)
+
+    for i in range(pretrain_iters):
+        optimizer_crf.zero_grad()
+        rand_radiance = torch.rand(1024, 3, requires_grad=True).to(device) * 3 # radiance in [0, 3]
+        rand_exposure = torch.rand(1024, 1, requires_grad=True).to(device) * 6 - 3.0 # radiance in [-3, 3]
+
+        gt_rgb = tonemapSimple(rand_radiance + rand_exposure)
+
+        rgb_l = model(rand_radiance, torch.exp(rand_exposure))
+        rgb_l = torch.sigmoid(rgb_l)
+
+        loss = (rgb_l - gt_rgb).norm(dim=1).mean()
+        print(f"step {i} pre-train loss: {loss.item()}")
+        loss.backward()
+        optimizer_crf.step()
+    return model
