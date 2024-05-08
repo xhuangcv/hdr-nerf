@@ -550,6 +550,12 @@ def train():
 
     # Create nerf model
     render_kwargs_train, render_kwargs_test, start, grad_vars, optimizer = create_nerf(args)
+    
+    # CRF initialization
+    if start == 0:
+        render_kwargs_train['network_fn'] = warm_crf(render_kwargs_train['network_fn'], pretrain_iters=500)
+        render_kwargs_train['network_fine'] = warm_crf(render_kwargs_train['network_fine'], pretrain_iters=500)
+    
     global_step = start
 
     bds_dict = {
