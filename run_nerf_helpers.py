@@ -391,13 +391,14 @@ def log_crf(x):
 
 
 def warm_crf(model, pretrain_iters=1000, device='cuda'):
-    params_to_train = model.exps_linears_r.parameters() \
-                    + model.exps_linears_g.parameters() \
-                    + model.exps_linears_b.parameters() \
-                    + model.r_l_linner.parameters() \
-                    + model.g_l_linner.parameters() \
-                    + model.b_l_linner.parameters()
-    
+    params_to_train = [
+        {'params':model.exps_linears_r.parameters()},
+        {'params':model.exps_linears_g.parameters()},
+        {'params':model.exps_linears_b.parameters()},
+        {'params':model.r_l_linner.parameters()},
+        {'params':model.g_l_linner.parameters()},
+        {'params':model.b_l_linner.parameters()},
+    ]
     optimizer_crf = torch.optim.Adam(params_to_train, lr=5e-4)
 
     for i in range(pretrain_iters):
