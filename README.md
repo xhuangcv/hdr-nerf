@@ -5,6 +5,11 @@ We present High Dynamic Range Neural Radiance Fields (HDR-NeRF) to recover an HD
 
 ![](https://github.com/shsf0817/hdr-nerf/blob/gh-pages/images/overview.png)
 
+## HDR-NeRF Journal Version Accepted by IEEE TPAMI
+
+We introduce a novel method  LTM-NeRF for **3D Tone Mapping** in HDR-NeRF. This journal version has been accepted by **IEEE TPAMI**.  
+Check out the project page [here](https://xhuangcv.github.io/LTM-NeRF/).  
+
 ## Method Overview
 The pipeline of HDR-NeRF modeling the simplified physical process. Our method is consisted of two modules: an HDR radiance field models the scene for radiance and densities and a tone mapper models the CRF for colors.
 
